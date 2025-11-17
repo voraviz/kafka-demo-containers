@@ -96,8 +96,20 @@ services:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka1:9092,kafka2:9093,kafka3:9094
       KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
-
-
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      # Jaeger UI
+      - "16686:16686"
+      # OTLP gRPC collector port
+      - "4317:4317"
+      # OTLP HTTP collector port
+      - "4318:4318"
+    environment:
+      # Optional: Explicitly set storage type to 'memory' (it's the default)
+      SPAN_STORAGE_TYPE: memory 
+    # networks:
+    #   - otel-network
 
 
 # podman-compose up -d

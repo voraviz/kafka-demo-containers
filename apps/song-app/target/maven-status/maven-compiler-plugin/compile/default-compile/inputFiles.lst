@@ -1,3 +1,3 @@
-/Users/voravit/Downloads/kafka/amq-streams-benchmarking/applications/song-app/src/main/java/org/acme/song/app/Operation.java
-/Users/voravit/Downloads/kafka/amq-streams-benchmarking/applications/song-app/src/main/java/org/acme/song/app/SongResource.java
-/Users/voravit/Downloads/kafka/amq-streams-benchmarking/applications/song-app/src/main/java/org/acme/song/app/Song.java
+/Users/voravit/Downloads/kafka/apps/song-app/src/main/java/org/acme/song/app/Song.java
+/Users/voravit/Downloads/kafka/apps/song-app/src/main/java/org/acme/song/app/SongResource.java
+/Users/voravit/Downloads/kafka/apps/song-app/src/main/java/org/acme/song/app/Operation.java

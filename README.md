@@ -6,6 +6,7 @@
     - [Producer](#producer)
     - [Consumer](#consumer)
   - [Kafka-UI](#kafka-ui)
+  - [Jaeger UI](#jaeger-ui)
 
 ## Prerequisites
 - Docker and docker-compose or Podman and podman-compose
@@ -22,6 +23,7 @@ Configuration
 | broker2    | 9093           | 29093     |
 | broker3    | 9094           | 29094     |
 | kafka-ui   | 8080           | 8085      |
+| Jaeger UI  | 16686          | 16686     |
 
 - run following commands
   
@@ -84,10 +86,11 @@ java \
 Sample output
 
 ```log
-15:17:18 INFO  traceId=, parentId=, spanId=, sampled= [io.sm.re.me.kafka] (smallrye-kafka-producer-thread-0) SRMSG18258: Kafka producer kafka-producer-songs, connected to Kafka brokers 'localhost:29092,localhost:29093,localhost:29094', is configured to write records to 'songs'
-15:17:19 INFO  traceId=, parentId=, spanId=, sampled= [io.quarkus] (main) song-app 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.0.3.Final) started in 0.698s. Listening on: http://0.0.0.0:8080
-15:17:19 INFO  traceId=, parentId=, spanId=, sampled= [io.quarkus] (main) Profile prod activated.
-15:17:19 INFO  traceId=, parentId=, spanId=, sampled= [io.quarkus] (main) Installed features: [cdi, kafka-client, micrometer, resteasy, resteasy-jsonb, smallrye-context-propagation, smallrye-health, smallrye-openapi, smallrye-reactive-messaging, smallrye-reactive-messaging-kafka, vertx]
+15:51:48 WARN  traceId=, parentId=, spanId=, sampled= [io.qu.op.ru.ex.ot.LateBoundBatchSpanProcessor] (main) No BatchSpanProcessor delegate specified, no action taken.
+15:51:48 INFO  traceId=, parentId=, spanId=, sampled= [io.sm.re.me.kafka] (smallrye-kafka-producer-thread-0) SRMSG18258: Kafka producer kafka-producer-songs, connected to Kafka brokers 'localhost:29092,localhost:29093,localhost:29094', is configured to write records to 'songs'
+15:51:49 INFO  traceId=, parentId=, spanId=, sampled= [io.quarkus] (main) song-app  1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.0.3.Final) started in 0.872s. Listening on: http://0.0.0.0:8080
+15:51:49 INFO  traceId=, parentId=, spanId=, sampled= [io.quarkus] (main) Profile prod activated.
+15:51:49 INFO  traceId=, parentId=, spanId=, sampled= [io.quarkus] (main) Installed features: [cdi, kafka-client, micrometer, opentelemetry, resteasy, resteasy-jsonb, smallrye-context-propagation, smallrye-health, smallrye-openapi, smallrye-reactive-messaging, smallrye-reactive-messaging-kafka, vertx]
 ```
 
 - Run following command to send messages to topic name songs
@@ -100,8 +103,8 @@ curl -v -X POST -H "Content-Type: application/json" -d @data/from-the-start.json
 Sample output
 
 ```log
-15:18:23 INFO  traceId=, parentId=, spanId=, sampled= [or.ac.so.ap.SongResource] (executor-thread-1) song: 8214d7db-827a-4685-8790-b045a091010f, Name: Uprising
-15:18:23 INFO  traceId=, parentId=, spanId=, sampled= [or.ac.so.ap.SongResource] (executor-thread-1) song: 1d2cb39d-01fa-48c3-9919-010f54f37f71, Name: From The Start
+15:52:33 INFO  traceId=841bc95a9818724e1d67b55fc6d28456, parentId=, spanId=0d334919bf6c87f6, sampled=true [or.ac.so.ap.SongResource] (executor-thread-1) song: 9cc85932-b267-466a-a326-0937836cedba, Name: Uprising
+15:52:33 INFO  traceId=383632a9cee05827268e32e2cab88380, parentId=, spanId=a7a5278c80bcabc6, sampled=true [or.ac.so.ap.SongResource] (executor-thread-1) song: 022786d6-02f6-47e8-b7f0-c68ec8ea388f, Name: From The Start
 ```
 
 ### Consumer
@@ -130,15 +133,13 @@ Sample output
 15:20:19 INFO  traceId=, parentId=, spanId=, sampled= [io.quarkus] (main) Profile prod activated.
 15:20:19 INFO  traceId=, parentId=, spanId=, sampled= [io.quarkus] (main) Installed features: [cdi, kafka-client, micrometer, resteasy-jsonb, smallrye-context-propagation, smallrye-health, smallrye-reactive-messaging, smallrye-reactive-messaging-kafka, vertx]
 15:20:24 INFO  traceId=, parentId=, spanId=, sampled= [io.sm.re.me.kafka] (vert.x-eventloop-thread-8) SRMSG18256: Initialize record store for topic-partition 'songs-0' at position -1.
-15:20:24 INFO  traceId=, parentId=, spanId=, sampled= [or.ac.so.in.ap.SongResource] (vert.x-eventloop-thread-8) Key: 8214d7db-827a-4685-8790-b045a091010f, Payload: {"author":"Matt Bellamy","id":"8214d7db-827a-4685-8790-b045a091010f","name":"Uprising","op":"ADD"}, Metadata: 2025-11-17T08:18:23.915Z
-15:20:24 INFO  traceId=, parentId=, spanId=, sampled= [or.ac.so.in.ap.SongResource] (vert.x-eventloop-thread-8) Key: 1d2cb39d-01fa-48c3-9919-010f54f37f71, Payload: {"author":"Laufey","id":"1d2cb39d-01fa-48c3-9919-010f54f37f71","name":"From The Start","op":"ADD"}, Metadata: 2025-11-17T08:18:23.920Z
 ```
 
 - Check that consumer read 2 JSON documents from topic name songs
 
 ```log
-15:20:24 INFO  traceId=, parentId=, spanId=, sampled= [or.ac.so.in.ap.SongResource] (vert.x-eventloop-thread-8) Key: 8214d7db-827a-4685-8790-b045a091010f, Payload: {"author":"Matt Bellamy","id":"8214d7db-827a-4685-8790-b045a091010f","name":"Uprising","op":"ADD"}, Metadata: 2025-11-17T08:18:23.915Z
-15:20:24 INFO  traceId=, parentId=, spanId=, sampled= [or.ac.so.in.ap.SongResource] (vert.x-eventloop-thread-8) Key: 1d2cb39d-01fa-48c3-9919-010f54f37f71, Payload: {"author":"Laufey","id":"1d2cb39d-01fa-48c3-9919-010f54f37f71","name":"From The Start","op":"ADD"}, Metadata: 2025-11-17T08:18:23.920Z
+15:50:24 INFO  traceId=47d6ff802a434ff8236fc356903b76dd, parentId=bc9f97db9b9351a1, spanId=d6fef143b93ba712, sampled=true [or.ac.so.in.ap.SongResource] (vert.x-eventloop-thread-8) Key: 1db61715-5b9f-4452-af6d-b6635648ad83, Payload: {"author":"Matt Bellamy","id":"1db61715-5b9f-4452-af6d-b6635648ad83","name":"Uprising","op":"ADD"}, Metadata: 2025-11-17T08:48:06.098Z
+15:50:24 INFO  traceId=1d1ab4b744f2f4a46d0ef4e31d6b7eee, parentId=ecef153888b1e9c9, spanId=ec77b679261abcd1, sampled=true [or.ac.so.in.ap.SongResource] (vert.x-eventloop-thread-8) Key: e3627ca2-1e2f-4120-aa69-1b6b01929958, Payload: {"author":"Laufey","id":"e3627ca2-1e2f-4120-aa69-1b6b01929958","name":"From The Start","op":"ADD"}, Metadata: 2025-11-17T08:48:06.103Z
 ```
 ## Kafka-UI
 
@@ -151,3 +152,11 @@ Sample output
 
 ![](images/kafka-ui-add-message.png)
 
+## Jaeger UI
+- Producer and consumer trace
+
+![](images/jaeger-trace-example.png)
+
+- Details duration
+
+![](images/jager-producer-trace.png)
