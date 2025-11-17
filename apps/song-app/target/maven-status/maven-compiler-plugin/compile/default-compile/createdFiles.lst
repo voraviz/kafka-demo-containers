@@ -1,0 +1,3 @@
+org/acme/song/app/Song.class
+org/acme/song/app/SongResource.class
+org/acme/song/app/Operation.class
