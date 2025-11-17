@@ -10,8 +10,9 @@
 
 ## Prerequisites
 - Docker and docker-compose or Podman and podman-compose
-- OpenJDK 21 and maven 3.9.x for run testing applications
-- curl
+- Optional: Test Applications
+    - OpenJDK 21 and maven 3.9.x for build applications
+    - curl
   
 ## Kafka
 Configuration
